@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Text, View } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -18,16 +17,23 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
-   
-    <View style={{backgroundColor:"red", width:"100%" , height:"100%"}}>
-      <Text style={{fontSize:30, fontWeight:"600", }}>Its Bykea Page Account</Text>
-      <Text>Hello World!</Text>
-    </View>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   );
 }
- // <Stack>
-    //   <Stack.Screen name="index" options={{ title: 'Home Page' }} />
-    //   <Stack.Screen name="FirstPage" options={{ title: 'First Page' }} />
-    // </Stack>
